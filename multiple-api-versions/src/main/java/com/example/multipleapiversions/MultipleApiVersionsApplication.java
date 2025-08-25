@@ -17,8 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         tags = {
                 @Tag(name = "users-v1", description = "Operations for Users API v1 (basic fields)"),
                 @Tag(name = "users-v2", description = "Operations for Users API v2 (extended fields)"),
-                @Tag(name = "users-v3", description = "Operations for Users API v3 (header versioning; behaves like v1)"),
-                @Tag(name = "users-v4", description = "Operations for Users API v4 (header versioning; behaves like v2)")
+                @Tag(name = "users-v3", description = "Operations for Users API v3 (header versioning; basic fields)"),
+                @Tag(name = "users-v4", description = "Operations for Users API v4 (header versioning; extended fields)")
         }
 )
 @SpringBootApplication
