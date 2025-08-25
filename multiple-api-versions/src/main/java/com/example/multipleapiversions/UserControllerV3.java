@@ -1,8 +1,7 @@
 package com.example.multipleapiversions;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,16 +25,12 @@ class UserControllerV3 {
     @Operation(
             summary = "Get a user (v3 via header)",
             description = "Version 3 selected by header; behaves like v1 (basic fields)",
-            tags = "users-v3",
-            parameters = {
-                    @Parameter(name = "X-API-Version", in = ParameterIn.HEADER, required = true,
-                            description = "API version header (must be 3)",
-                            schema = @Schema(example = "3"))
-            }
+            tags = "users-v3"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "404", description = "Not found")
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = UserV1.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping("/{id}")
     public UserV1 get(@PathVariable Long id) {
@@ -44,12 +39,7 @@ class UserControllerV3 {
 
     @Operation(
             summary = "Create a user (v3 via header)",
-            tags = "users-v3",
-            parameters = {
-                    @Parameter(name = "X-API-Version", in = ParameterIn.HEADER, required = true,
-                            description = "API version header (must be 3)",
-                            schema = @Schema(example = "3"))
-            }
+            tags = "users-v3"
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -18,9 +18,9 @@ La aplicación se inicia por defecto en `http://localhost:8080`.
 
 ## Documentación OpenAPI / Swagger
 
-- Swagger UI: `http://localhost:8080/swagger-ui.html`
-- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
-- OpenAPI YAML: `http://localhost:8080/v3/api-docs.yaml`
+- [Swagger UI](http://localhost:8080/swagger-ui.html)
+- [OpenAPI JSON](http://localhost:8080/v3/api-docs)
+- [OpenAPI YAML](http://localhost:8080/v3/api-docs.yaml)
 
 La especificación incluye metadatos (título, versión) y tags:
 

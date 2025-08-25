@@ -28,8 +28,8 @@ class UserControllerV2 {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = UserV2.class))),
-            @ApiResponse(responseCode = "404", description = "Not found")
+                    content = @Content(schema = @Schema(implementation = UserV1.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping("/{id}")
     public UserV2 get(@PathVariable Long id) {

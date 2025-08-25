@@ -1,8 +1,6 @@
 package com.example.multipleapiversions;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,12 +25,7 @@ class UserControllerV4 {
     @Operation(
             summary = "Get a user (v4 via header)",
             description = "Version 4 selected by header; behaves like v2 (extended fields)",
-            tags = "users-v4",
-            parameters = {
-                    @Parameter(name = "X-API-Version", in = ParameterIn.HEADER, required = true,
-                            description = "API version header (must be 4)",
-                            schema = @Schema(example = "4"))
-            }
+            tags = "users-v4"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
@@ -46,12 +39,7 @@ class UserControllerV4 {
 
     @Operation(
             summary = "Create a user (v4 via header)",
-            tags = "users-v4",
-            parameters = {
-                    @Parameter(name = "X-API-Version", in = ParameterIn.HEADER, required = true,
-                            description = "API version header (must be 4)",
-                            schema = @Schema(example = "4"))
-            }
+            tags = "users-v4"
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
