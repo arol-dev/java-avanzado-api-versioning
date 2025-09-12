@@ -27,7 +27,8 @@ la compatibilidad entre productores y consumidores de APIs mediante contratos.
 
 ## Cómo se usa aquí
 
-En el proyecto hermano multiple-api-versions (Producer) se define al menos un
+En el proyecto hermano **multiple-api-versions** (Producer) se define al menos
+un
 contrato en `src/test/resources/contracts`. Con el plugin de SCC, el producer:
 
 1) Genera tests a partir del contrato y los ejecuta.
@@ -80,12 +81,30 @@ Spring Cloud Contract Stub Runner (modo LOCAL o REMOTE).
     - O bien, editar el POM para quitar el `skipTests` si quieres habilitarlos
       permanentemente.
 
-4) Ejecutar la aplicación del consumer (si aplica):
+4) Asserciones en los tests del consumidor:
+
+   A partir de este cambio, podemos realizar aserciones sobre la petición en los
+   tests de JUnit. Por ejemplo,
+   en `UserControllerIntegrationTest` se valida el código de estado y que el
+   cuerpo
+   contenga los campos definidos en el contrato (id, email, name, status):
+
+   ```java
+   assertThat(response.statusCode()).isEqualTo(200);
+   assertThat(body)
+       .contains("\"id\":1")
+       .contains("\"email\":\"a@b.com\"")
+       .contains("\"name\":\"Ada\"")
+       .contains("\"status\":\"ACTIVE\"");
+   ```
+
+5) Ejecutar la aplicación del consumer (si aplica):
    ```bash
    mvn spring-boot:run -f pom.xml
    ```
 
-   Nota: Este módulo está pensado como plantilla para demostrar el uso de SCC
+   **Nota**: Este módulo está pensado como plantilla para demostrar el uso de
+   SCC
    en tests. Adapta controladores/servicios para consumir la API real y valida
    con stubs durante el desarrollo.
 
