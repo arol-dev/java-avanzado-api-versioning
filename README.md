@@ -1,78 +1,105 @@
-# Versionado de API y Contratos (Producer/Consumer)
+# Java Avanzado y API Versioning: Sistema de Usuarios
 
-Este repositorio contiene dos proyectos independientes que se complementan:
+## Escenario
 
-- **multiple-api-versions (Producer)**: Servicio Spring Boot que expone
-  múltiples versiones de una API REST (v1, v2 y variantes por cabecera v3/v4).
-  Incluye documentación OpenAPI/Swagger y un ejemplo de contratos con Spring
-  Cloud Contract (SCC) en el lado productor.
-- **contract-consumer (Consumer)**: Aplicación (plantilla) de consumidor que
-  muestra cómo validar su integración usando stubs generados por Spring Cloud
-  Contract.
+Este laboratorio simula un sistema de gestión de usuarios en una arquitectura de microservicios. Nos enfrentamos a desafíos comunes en sistemas evolutivos:
 
-Ambos proyectos son independientes y pueden ejecutarse por separado. El flujo
-recomendado es:
+1. **Evolución del API**: Los consumidores necesitan nuevas funcionalidades, pero no podemos romper a los clientes antiguos.
+2. **Integración Fiable**: Necesitamos garantizar que nuestro servicio (Productor) y sus clientes (Consumidores) se comunican correctamente antes de desplegar.
+3. **Persistencia Real**: Las pruebas con bases de datos en memoria (H2) a veces ocultan errores específicos del motor real.
 
-1) Desarrollar y versionar la API en multiple-api-versions (producer).
-2) Generar y publicar/instalar los stubs de contrato desde el producer (SCC).
-3) Configurar el consumer para usar esos stubs en sus tests de integración (Stub
-   Runner/WireMock).
+## 🎓 Laboratorio: API Versioning & Testing
 
-## Requisitos
+### Objetivos de Aprendizaje
 
-- Java 17+
-- Maven 3.8+
+* Implementar y testear diferentes estrategias de **Versionado de API** (URL vs Header).
+* Garantizar la estabilidad de la comunicación entre servicios mediante **Contract Testing** (Spring Cloud Contract).
+* Configurar entornos de pruebas de integración robustos con **Docker** y **Testcontainers**.
 
-## Árbol del repositorio
+### Ejercicios
 
-- /multiple-api-versions: servicio productor (con OpenAPI y contratos SCC)
-- /contract-consumer: proyecto consumidor (tests con stubs de SCC)
+La carpeta `docs/` contiene las guías paso a paso para cada ejercicio.
 
-## Cómo ejecutar (Producer)
+| # | Nombre del Ejercicio | Archivo de Test (Problema) | Documentación (Solución) |
+|---|---|---|---|
+| 1 | **Versionado de API** | [UserVersioningTest.java](multiple-api-versions/src/test/java/com/example/multipleapiversions/UserVersioningTest.java) | [Guía Ejercicio 1](docs/exercise-1-versioning.md) |
+| 2 | **Contrato (Productor)** | [BaseTest.java](multiple-api-versions/src/test/java/com/example/multipleapiversions/BaseTest.java) | [Guía Ejercicio 2](docs/exercise-2-producer.md) |
+| 3 | **Contrato (Consumidor)** | [UserContractTest.java](contract-consumer/src/test/java/com/example/contractconsumer/UserContractTest.java) | [Guía Ejercicio 3](docs/exercise-3-consumer.md) |
+| 4 | **Persistencia (Postgres)** | [UserRepositoryTest.java](multiple-api-versions/src/test/java/com/example/multipleapiversions/UserRepositoryTest.java) | [Guía Ejercicio 4](docs/exercise-4-postgres.md) |
 
-1. Arrancar la app:
-   ```bash
-   mvn spring-boot:run -f multiple-api-versions/pom.xml
-   ```
+### Flujo de Trabajo
 
-   La aplicación se inicia en http://localhost:8080
+1. **Lee la documentación** del ejercicio correspondiente en la carpeta `docs/`.
+2. **Abre el archivo** de test indicado (ver tabla arriba).
+3. Busca los comentarios `// TODO:` y completa el código siguiendo la guía.
+4. **Ejecuta el comando** de verificación para confirmar que tu solución funciona.
 
-2. OpenAPI/Swagger:
-    - Swagger UI: http://localhost:8080/swagger-ui.html
-    - OpenAPI JSON: http://localhost:8080/v3/api-docs
-    - OpenAPI YAML: http://localhost:8080/v3/api-docs.yaml
+### Arquitectura
 
-3. Generar tests y stubs de contratos (SCC):
-   ```bash
-   mvn -f multiple-api-versions/pom.xml clean verify
-   ```
+```mermaid
+graph LR
+    Consumer[Consumer Service] -- "GET /api/v2/users/{id}" --> Producer[Producer Service]
+    Producer -- "JDBC" --> DB[(Postgres DB)]
+    
+    subgraph Testing Strategy
+    CT[Contract Testing] -.-> Producer
+    CT -.-> Consumer
+    TC[Testcontainers] -.-> DB
+    end
+```
 
-    - Los tests de contrato generados se ejecutarán.
-    - Se generará el artefacto stubs (classifier "stubs").
+### Tecnologías
 
-4. Instalar en el repositorio local de Maven (para que el consumer lo use):
-   ```bash
-   mvn -f multiple-api-versions/pom.xml clean install
-   ```
+* **Java 17**
+* **Spring Boot 3.x**
+* **Spring Cloud Contract**: Para pruebas de contrato orientadas al consumidor.
+* **Testcontainers**: Para pruebas de integración con bases de datos reales.
+* **JUnit 5 & AssertJ**: Framework de testing y aserciones fluidas.
+* **Maven**: Gestión de dependencias.
 
-   Esto instalará tanto el jar del producer como el jar de stubs en tu repo
-   local `(~/.m2/repository)`.
+### Estructura del Proyecto
 
-## Cómo ejecutar (Consumer)
+```
+.
+├── multiple-api-versions/          # (Productor) Servicio Principal
+│   ├── src/main/java...            # Código fuente (Controladores, Entidades)
+│   ├── src/test/resources/contracts # Definición de Contratos (Groovy)
+│   └── src/test/java...            # Ejercicios 1, 2 y 4
+├── contract-consumer/              # (Consumidor) Servicio Cliente simulado
+│   └── src/test/java...            # Ejercicio 3
+└── docs/                           # Guías paso a paso de los laboratorios
+```
 
-El consumer es una plantilla que muestra cómo configurar tests con Spring Cloud
-Contract Stub Runner/WireMock.
-Consulta [el README del consumidor](contract-consumer/README.md) para conocer:
+### Cómo Ejecutar
 
-- Qué es Spring Cloud Contract.
-- Cómo apuntar a los stubs del producer.
-- Cómo ejecutar los tests del consumer y la aplicación.
+#### Prerrequisitos
 
-## Notas
+* Java 17+ instalado.
+* Maven instalado (o usar `./mvnw`).
+* **Docker Desktop** corriendo (necesario para Testcontainers).
 
-- El producer define contratos de ejemplo en
-  `multiple-api-versions/src/test/resources/contracts`.
-- El plugin **spring-cloud-contract-maven-plugin** genera tests en el producer y
-  stubs reutilizables por los consumidores.
-- Para detalles ampliados de endpoints y ejemplos cURL,
-  revisa [el README del productor](multiple-api-versions/README.md).
+#### Comandos Útiles
+
+**Compilar todo el proyecto:**
+
+```bash
+./mvnw clean install -DskipTests
+```
+
+**Levantar infraestructura manual (Opcional):**
+
+```bash
+cd multiple-api-versions
+docker-compose up -d
+```
+
+### Solución de Problemas
+
+| Error | Causa Probable | Solución |
+|---|---|---|
+| `Connection refused` (Testcontainers) | Docker no está corriendo | Inicia Docker Desktop. |
+| `StubRunner` no encuentra stubs | No se instalaron los stubs | Ejecuta `mvn clean install` en el proyecto `multiple-api-versions` primero. |
+| `UnsupportedOperationException` | No has completado el TODO | Implementa el código en el bloque `// TODO` o elimina la excepción. |
+
+---
+🎓 **Universidad Central de Venezuela - Laboratorio de Java Avanzado**
