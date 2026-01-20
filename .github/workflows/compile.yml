@@ -32,8 +32,8 @@ jobs:
 
             - name: Compile ${{ matrix.module }}
               working-directory: ${{ matrix.module }}
-              run: ./mvnw clean compile -DskipTests -B
+              run: mvn clean compile -DskipTests -B
 
             - name: Package ${{ matrix.module }}
               working-directory: ${{ matrix.module }}
-              run: ./mvnw package -DskipTests -B
+              run: mvn package -DskipTests -B
